@@ -1,0 +1,23 @@
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <h1>Todo App</h1>
+    <form method="post" action="/addTodo"> <!--form태그의 todo에 값을 입력하고 submit버튼을 누르면 /addTodo에게 post형식으로 값을 전달하겠다.-->
+        <input type="text" name="todo"/>
+        <input type="submit" name="Add Todo"/>
+    </form>
+    <hr>
+    <ul>
+        <li th:each="todo : ${todos}">
+            <span th:text="${todo.todo}"></span>
+<!--        <form id="delete_form" action="" method="post">-->
+            <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post">
+<!--            <input type="hidden" name="_method" th:value="delete"/>-->
+                <input type="hidden" name="_method" value="delete"/>
+<!--            <a onclick="if (confirm('정말로 삭제하시겠습니까?')) document.getElementById('delete_form').submit();" class="btn btn-danger">삭제</a>-->
+                <button th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'" class="btn btn-danger">삭제</button>
+            </form>
+        </li>
+    </ul>
+</html>
+

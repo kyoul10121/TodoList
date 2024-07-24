@@ -1,0 +1,24 @@
+# Spring Data Source ?? - MySQL DB?? ??? ??
+# database ?? ??
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    ?? PC? ????? Database??? ?? ???.
+    url: jdbc:mysql://127.0.0.1:3306/todolist_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    #    mysql? ??? ??? ?? ??? ?? ???.
+    username: root
+    password: # ??? mysql ????
+  thymeleaf:
+    cache: false
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  # spring data jpa ??
+  jpa:
+    hibernate:
+      ddl-auto: update  # 애플리케이션 시작 시 모든 table drop하고 새로 create / 개발 단계에서만 사용, 실제로는 update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true  # 표시되는 sql 정렬
