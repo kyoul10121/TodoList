@@ -155,3 +155,180 @@
 <!--</div>-->
 <!--</body>-->
 <!--</html>-->
+<!--삭제기능 추가 버전-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Todo App</title>-->
+<!--        <style>-->
+<!--            body {-->
+<!--                font-family: Arial, sans-serif;-->
+<!--                background-color: #f4f4f9;-->
+<!--                margin: 0;-->
+<!--                padding-top: 80px; /* 상단 고정 영역의 높이만큼 패딩 추가 */-->
+<!--                display: flex;-->
+<!--            }-->
+<!--            .sidebar {-->
+<!--                position: fixed;-->
+<!--                top: 0;-->
+<!--                left: 0;-->
+<!--                width: 200px;-->
+<!--                height: 100%;-->
+<!--                background-color: #333;-->
+<!--                padding-top: 60px;-->
+<!--                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);-->
+<!--                z-index: 1000;-->
+<!--                color: white;-->
+<!--            }-->
+<!--            .sidebar h2 {-->
+<!--                text-align: center;-->
+<!--                color: white;-->
+<!--            }-->
+<!--            .sidebar ul {-->
+<!--                list-style-type: none;-->
+<!--                padding: 0;-->
+<!--                margin: 0;-->
+<!--            }-->
+<!--            .sidebar li {-->
+<!--                padding: 10px 20px;-->
+<!--            }-->
+<!--            .sidebar li:hover {-->
+<!--                background-color: #575757;-->
+<!--                cursor: pointer;-->
+<!--            }-->
+<!--            .header {-->
+<!--                position: fixed;-->
+<!--                top: 0;-->
+<!--                left: 200px;-->
+<!--                right: 0;-->
+<!--                background-color: #fff;-->
+<!--                padding: 20px;-->
+<!--                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--                z-index: 1000;-->
+<!--                text-align: center;-->
+<!--                width: calc(100% - 200px);-->
+<!--            }-->
+<!--            .header h1 {-->
+<!--                margin: 0 0 20px;-->
+<!--                color: #333;-->
+<!--            }-->
+<!--            .header form {-->
+<!--                display: flex;-->
+<!--                justify-content: center;-->
+<!--                margin-bottom: 0;-->
+<!--                max-width: 600px;-->
+<!--                margin: 0 auto;-->
+<!--            }-->
+<!--            .header form input[type="text"] {-->
+<!--                flex: 1;-->
+<!--                padding: 10px;-->
+<!--                border: 1px solid #ccc;-->
+<!--                border-radius: 5px;-->
+<!--                margin-right: 10px;-->
+<!--                max-width: 400px;-->
+<!--            }-->
+<!--            .header form input[type="submit"] {-->
+<!--                padding: 10px 20px;-->
+<!--                border: none;-->
+<!--                background-color: #28a745;-->
+<!--                color: white;-->
+<!--                border-radius: 5px;-->
+<!--                cursor: pointer;-->
+<!--            }-->
+<!--            .header form input[type="submit"]:hover {-->
+<!--                background-color: #218838;-->
+<!--            }-->
+<!--            .container {-->
+<!--                max-width: 600px;-->
+<!--                margin: 20px auto;-->
+<!--                padding: 20px;-->
+<!--                background-color: #fff;-->
+<!--                border-radius: 10px;-->
+<!--                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--            }-->
+<!--            hr {-->
+<!--                border: 0;-->
+<!--                border-top: 1px solid #ccc;-->
+<!--                margin: 20px 0;-->
+<!--            }-->
+<!--            ul {-->
+<!--                list-style: none;-->
+<!--                padding: 0;-->
+<!--            }-->
+<!--            li {-->
+<!--                display: flex;-->
+<!--                justify-content: space-between;-->
+<!--                align-items: center;-->
+<!--                padding: 10px;-->
+<!--                border: 1px solid #ccc;-->
+<!--                border-radius: 5px;-->
+<!--                margin-bottom: 10px;-->
+<!--                background-color: #f9f9f9;-->
+<!--            }-->
+<!--            li span {-->
+<!--                flex: 1;-->
+<!--                margin-right: 10px;-->
+<!--            }-->
+<!--            li form {-->
+<!--                margin: 0;-->
+<!--            }-->
+<!--            li button {-->
+<!--                background-color: #dc3545;-->
+<!--                color: white;-->
+<!--                border: none;-->
+<!--                padding: 5px 10px;-->
+<!--                border-radius: 5px;-->
+<!--                cursor: pointer;-->
+<!--                margin-left: 5px;-->
+<!--            }-->
+<!--            li button:hover {-->
+<!--                background-color: #c82333;-->
+<!--            }-->
+<!--            .edit-button {-->
+<!--                background-color: #007bff;-->
+<!--                margin-left: 5px;-->
+<!--                text-decoration: none;-->
+<!--                color: white;-->
+<!--                padding: 5px 10px;-->
+<!--                border-radius: 5px;-->
+<!--                cursor: pointer;-->
+<!--            }-->
+<!--            .edit-button:hover {-->
+<!--                background-color: #0056b3;-->
+<!--            }-->
+<!--        </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="sidebar">-->
+<!--    <h2>Categories</h2>-->
+<!--    <ul>-->
+<!--        <li>카테고리 1</li>-->
+<!--        <li>카테고리 2</li>-->
+<!--    </ul>-->
+<!--</div>-->
+<!--<div class="header">-->
+<!--    <h1>Todo App</h1>-->
+<!--    <form method="post" action="/addTodo">-->
+<!--        <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>-->
+<!--        <input type="submit" value="Add Todo"/>-->
+<!--    </form>-->
+<!--</div>-->
+<!--<div class="container">-->
+<!--    <ul>-->
+<!--        <li th:each="todo : ${todos}">-->
+<!--            <span th:text="${todo.todo}"></span>-->
+<!--            <div>-->
+<!--                <a th:href="@{/edit/{id}(id=${todo.id})}" class="edit-button">수정</a>-->
+<!--                <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post" style="display:inline;">-->
+<!--                    <input type="hidden" name="_method" value="delete"/>-->
+<!--                    <button type="button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'">삭제</button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </li>-->
+<!--    </ul>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->

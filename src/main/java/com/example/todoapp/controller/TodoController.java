@@ -28,13 +28,27 @@ public class TodoController {
         toDoRepository.save(toDo);
         return "redirect:/"; //"/"로 자동으로 이동하라
     }
-
+    // 삭제
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         toDoRepository.deleteById(id);
         return "redirect:/";
     }
+    // 수정 페이지
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Long id, Model model) {
+        Todo toDo = toDoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
+        model.addAttribute("todo", toDo);
+        return "editTodo";
+    }
 
+    @PostMapping("/edit/{id}")
+    public String update(@PathVariable Long id, @RequestParam("todo") String todo) {
+        Todo toDo = toDoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
+        toDo.setTodo(todo);
+        toDoRepository.save(toDo);
+        return "redirect:/";
+    }
 
-
+    // 완료 처리
 }
