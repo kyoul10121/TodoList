@@ -13,8 +13,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @NoArgsConstructor
 @Setter
 @Getter
-// todo table과 관련이 있고 '@Id'
-public class Todo {
+public class Todo { // todo table과 관련이 있고 '@Id'
     @Id //primary key라는 뜻
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;    //이 아이디는 자동 증가하는 값이다.(바로 위에 줄의 뜻 -> '@GeneratedValue')
@@ -34,6 +33,14 @@ public class Todo {
         this.id = id;
     }
 
+    public String getTodo() {
+        return todo;
+    }
+
+    public void setTodo(String todo) {
+        this.todo = todo;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -49,6 +56,4 @@ public class Todo {
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
-
-
 }
