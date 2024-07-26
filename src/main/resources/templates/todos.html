@@ -4,6 +4,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
+    <!--반응형 웹페이지-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Todo App</title>
     <style>
         /* 스타일은 동일 */
@@ -18,6 +20,7 @@
             min-height: 100vh;
         }
         .sidebar {
+            flex: 0.7;
             width: 200px;
             background-color: #ffffff;
             padding: 20px;
@@ -25,6 +28,7 @@
         }
         .sidebar h2 {
             color: black;
+            padding: 10px;
             margin-top: 80px;
             margin-left: 40px;
             margin-bottom: 30px;
@@ -35,8 +39,9 @@
             padding: 0;
         }
         .sidebar ul li {
-            margin-left: 30px;
-            margin-bottom: 30px;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 40px 30px;
             font-size: 27px;
         }
         .sidebar li:hover {
@@ -44,7 +49,7 @@
             cursor: pointer;
         }
         .content {
-            flex: 1;
+            flex: 2.3;
             display: flex;
             flex-direction: column;
             padding: 20px;
@@ -53,23 +58,23 @@
             display: flex;
             flex-direction: column;
             border-bottom: 1px solid #dddddd;
-            margin-bottom: 20px;
-            margin: 32px 16px 40px;
+            /*margin: 32px 16px 40px;*/
+            margin: 20px;
         }
         .header h1 {
-            margin: 0 0 20px;
+            margin:20px 20px 0px;
             font-size: 50px;
             color: #333;
         }
         .header form {
             display: flex;
-            justify-content: left;
-            margin-bottom: 0;
+            /*justify-content: left;*/
+            margin: 20px 0 10px;
         }
         .header form input[type="text"] {
             background-color: #E1DEDE;
-            margin-top: 10px;
             padding: 10px;
+            margin: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
@@ -77,6 +82,7 @@
         }
         .header form input[type="submit"] {
             padding: 10px 20px;
+            margin: 10px;
             border: none;
             background-color: #28a745;
             color: white;
@@ -88,37 +94,29 @@
         }
         .main-content {
             flex: 1;
+            margin: 0 20px 20px;
         }
-        hr {
-            border: 0;
-            border-top: 1px solid #ccc;
-            margin: 20px 0;
-        }
-        ul {
+        .main-content ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
-        .container li {
+        .main-content ul li {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 10px;
-            margin-bottom: 5px;
-            background-color: #ffffff;
         }
+
         .completed {
             text-decoration: line-through;
             color: #EB5757;
-        }
-        .main-content li {
-            margin-left: 20px;
         }
         input[type="checkbox"] {
             display: none;
         }
         input[type="checkbox"] + label {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             position: relative;
             display: inline-block;
             border-radius: 17px;
@@ -129,10 +127,10 @@
         }
         input[type="checkbox"]:checked + label::after {
             content: url("/images/Check.svg");
-            width: 42px;
-            height: 45px;
+            width: 40px;
+            height: 43px;
             position: absolute;
-            left: 3px;
+            left: 2px;
             bottom: 1px;
         }
         li span {
@@ -144,24 +142,58 @@
         li form {
             margin: 0;
         }
-        li button {
-            background-color: #dc3545;
-            color: white;
+        button {
+            padding: 0;
+            margin: 0 5px 0;
+            background-color: #ffffff;
             border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
             cursor: pointer;
-            margin-left: 5px;
         }
-        li button:hover {
-            background-color: #c82333;
+        .btn {
+            display: flex;
+            align-items: center;
         }
-        .edit-button {
-            background-color: #007bff;
-            margin-left: 5px;
+        /*테블릿일 경우*/
+        @media screen and (max-width:  768px){
+            .sidebar {
+                width: 100%;
+                padding: 10px;
+                font-size: 15px;
+            }
+            .content {
+                padding: 10px;
+            }
+            .header input[type="text"] {
+                font-size: 14px;
+            }
         }
-        .edit-button:hover {
-            background-color: #0056b3;
+        /*모바일일 경우*/
+        @media screen and (max-width: 480px){
+            .sidebar {
+                width: 100px;
+            }
+            .sidebar h2 {
+                align-content: center;
+                font-size: 15px;
+                margin-left: 20px;
+            }
+            .sidebar ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .sidebar ul li {
+                margin: 0 12px 30px;
+                font-size: 15px;
+            }
+            .content {
+                flex: 2;
+            }
+            .header form {
+                flex-direction: column;
+            }
+            .header form input {
+                margin: 0 0px 10px;
+            }
         }
     </style>
 </head>
@@ -191,14 +223,18 @@
                     <input th:id="'check' + ${iterStat.index}" type="checkbox" th:checked="${todo.completed}" onchange="toggleCompletion(this)">
                     <label th:for="'check' + ${iterStat.index}"></label>
                     <span th:text="${todo.title} + ' - ' + ${todo.todo}"></span>
-
-                    <div>
+                    <!-- 수정 , 삭제 버튼 -->
+                    <div class="btn">
                         <a th:href="@{/edit/{id}(id=${todo.id})}">
-                            <button type="button" class="edit-button">수정</button>
+                            <button type="button" class="edit-button">
+                                <img width="45" height="45" src="/images/edit.svg" alt=""/>
+                            </button>
                         </a>
                         <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post">
                             <input type="hidden" name="_method" value="delete"/>
-                            <button type="button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'">삭제</button>
+                            <button type="button" class="delete-button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'">
+                                <img width="50" height="50" src="/images/delete.svg" alt="">
+                            </button>
                         </form>
                     </div>
                 </li>
