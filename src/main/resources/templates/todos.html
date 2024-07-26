@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Todo App</title>
     <style>
+        /* 스타일은 동일 */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -46,7 +47,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding:20px;
+            padding: 20px;
         }
         .header {
             display: flex;
@@ -66,11 +67,6 @@
             margin-bottom: 0;
         }
         .header form input[type="text"] {
-            /*width: 300px;*/
-            /*padding: 10px;*/
-            /*border: 1px solid #ccc;*/
-            /*border-radius: 5px;*/
-            /*margin-right: 10px;*/
             background-color: #E1DEDE;
             margin-top: 10px;
             padding: 10px;
@@ -107,17 +103,9 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            /*border: 1px solid #ccc;*/
-            /*border-radius: 5px;*/
             margin-bottom: 5px;
             background-color: #ffffff;
         }
-        /*li.completed span { //체크박스 줄 긋기 되긴 되는데 굳이 이걸 써야하는 건가 ?*/
-        /*    text-decoration: line-through;*/
-        /*    color: #888;*/
-        /*}*/
-
-        /*체크박스 완료 항목*/
         .completed {
             text-decoration: line-through;
             color: #EB5757;
@@ -125,11 +113,10 @@
         .main-content li {
             margin-left: 20px;
         }
-
-        input[type="checkbox"]{
+        input[type="checkbox"] {
             display: none;
         }
-        input[type="checkbox"]+label{
+        input[type="checkbox"] + label {
             width: 40px;
             height: 40px;
             position: relative;
@@ -140,20 +127,19 @@
             vertical-align: middle;
             flex-shrink: 0;
         }
-        input[id="check"]:checked + label::after{
-            content:url("/images/Check.svg");
+        input[type="checkbox"]:checked + label::after {
+            content: url("/images/Check.svg");
             width: 42px;
             height: 45px;
             position: absolute;
             left: 3px;
-            bottom:1px;
+            bottom: 1px;
         }
         li span {
             flex: 1;
             margin-right: 10px;
             margin-left: 20px;
             font-size: 25px;
-
         }
         li form {
             margin: 0;
@@ -181,45 +167,44 @@
 </head>
 <body>
 <div class="container">
-<div class="sidebar">
-    <h2>All Tasks</h2>
-    <ul>
-        <li>Favourites</li>
-        <li>Work</li>
-        <li>Study</li>
-        <li>Sports</li>
-    </ul>
-</div>
-<div class="content">
-<div class="header">
-    <h1>All Tasks</h1>
-    <form method="post" action="/addTodo">
-        <input type="text" name="title" placeholder="제목을 입력하세요" required/>
-        <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>
-        <input type="submit" value="Add Todo"/>
-    </form>
-</div>
-    <div class="main-content">
+    <div class="sidebar">
+        <h2>All Tasks</h2>
         <ul>
-            <li th:each="todo : ${todos}" th:classappend="${todo.completed} ? 'completed' : ''">
-                <!--체크박스 완료 항목 줄 긋기 실패 코드-->
-                <!--<input type="checkbox" th:checked="${todo.completed}" th:attr="onchange='window.location.href=\'/complete/\' + [[${todo.id}]]'" /> -->
-                <input id="check"  type="checkbox" th:checked="${todo.completed}" onchange="toggleCompletion(this)">
-                <label for="check"></label>
-                <span th:text="${todo.title} + ' - ' + ${todo.todo}"></span>
-                <div>
-                    <a th:href="@{/edit/{id}(id=${todo.id})}">
-                        <button type="button" class="edit-button">수정</button>
-                    </a>
-                    <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post">
-                        <input type="hidden" name="_method" value="delete"/>
-                        <button type="button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'">삭제</button>
-                    </form>
-                </div>
-            </li>
+            <li>Favourites</li>
+            <li>Work</li>
+            <li>Study</li>
+            <li>Sports</li>
         </ul>
     </div>
-</div>
+    <div class="content">
+        <div class="header">
+            <h1>All Tasks</h1>
+            <form method="post" action="/addTodo">
+                <input type="text" name="title" placeholder="제목을 입력하세요" required/>
+                <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>
+                <input type="submit" value="Add Todo"/>
+            </form>
+        </div>
+        <div class="main-content">
+            <ul>
+                <li th:each="todo, iterStat : ${todos}" th:classappend="${todo.completed} ? 'completed' : ''">
+                    <input th:id="'check' + ${iterStat.index}" type="checkbox" th:checked="${todo.completed}" onchange="toggleCompletion(this)">
+                    <label th:for="'check' + ${iterStat.index}"></label>
+                    <span th:text="${todo.title} + ' - ' + ${todo.todo}"></span>
+
+                    <div>
+                        <a th:href="@{/edit/{id}(id=${todo.id})}">
+                            <button type="button" class="edit-button">수정</button>
+                        </a>
+                        <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button type="button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'">삭제</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 <!-- 체크박스 완료 시 줄 긋기-->
 <script th:inline="javascript">
@@ -227,15 +212,475 @@
         var listItem = checkbox.parentElement;
         if (checkbox.checked) {
             listItem.classList.add('completed');
-        }else {
+        } else {
             listItem.classList.remove('completed');
         }
     }
-
 </script>
 </body>
 </html>
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Todo App</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+<!--        .container {-->
+<!--            display: flex;-->
+<!--            min-height: 100vh;-->
+<!--        }-->
+<!--        .sidebar {-->
+<!--            width: 200px;-->
+<!--            background-color: #ffffff;-->
+<!--            padding: 20px;-->
+<!--            border-right: 1px solid #dddddd;-->
+<!--        }-->
+<!--        .sidebar h2 {-->
+<!--            color: black;-->
+<!--            margin-top: 80px;-->
+<!--            margin-left: 40px;-->
+<!--            margin-bottom: 30px;-->
+<!--            font-size: 30px;-->
+<!--        }-->
+<!--        .sidebar ul {-->
+<!--            list-style-type: none;-->
+<!--            padding: 0;-->
+<!--        }-->
+<!--        .sidebar ul li {-->
+<!--            margin-left: 30px;-->
+<!--            margin-bottom: 30px;-->
+<!--            font-size: 27px;-->
+<!--        }-->
+<!--        .sidebar li:hover {-->
+<!--            color: #575757;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        .content {-->
+<!--            flex: 1;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            padding:20px;-->
+<!--        }-->
+<!--        .header {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            border-bottom: 1px solid #dddddd;-->
+<!--            margin-bottom: 20px;-->
+<!--            margin: 32px 16px 40px;-->
+<!--        }-->
+<!--        .header h1 {-->
+<!--            margin: 0 0 20px;-->
+<!--            font-size: 50px;-->
+<!--            color: #333;-->
+<!--        }-->
+<!--        .header form {-->
+<!--            display: flex;-->
+<!--            justify-content: left;-->
+<!--            margin-bottom: 0;-->
+<!--        }-->
+<!--        .header form input[type="text"] {-->
+<!--            /*width: 300px;*/-->
+<!--            /*padding: 10px;*/-->
+<!--            /*border: 1px solid #ccc;*/-->
+<!--            /*border-radius: 5px;*/-->
+<!--            /*margin-right: 10px;*/-->
+<!--            background-color: #E1DEDE;-->
+<!--            margin-top: 10px;-->
+<!--            padding: 10px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 5px;-->
+<!--            font-size: 16px;-->
+<!--            width: 100%;-->
+<!--        }-->
+<!--        .header form input[type="submit"] {-->
+<!--            padding: 10px 20px;-->
+<!--            border: none;-->
+<!--            background-color: #28a745;-->
+<!--            color: white;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        .header form input[type="submit"]:hover {-->
+<!--            background-color: #218838;-->
+<!--        }-->
+<!--        .main-content {-->
+<!--            flex: 1;-->
+<!--        }-->
+<!--        hr {-->
+<!--            border: 0;-->
+<!--            border-top: 1px solid #ccc;-->
+<!--            margin: 20px 0;-->
+<!--        }-->
+<!--        ul {-->
+<!--            list-style: none;-->
+<!--            padding: 0;-->
+<!--        }-->
+<!--        .container li {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            padding: 10px;-->
+<!--            /*border: 1px solid #ccc;*/-->
+<!--            /*border-radius: 5px;*/-->
+<!--            margin-bottom: 5px;-->
+<!--            background-color: #ffffff;-->
+<!--        }-->
+<!--        /*li.completed span { //체크박스 줄 긋기 되긴 되는데 굳이 이걸 써야하는 건가 ?*/-->
+<!--        /*    text-decoration: line-through;*/-->
+<!--        /*    color: #888;*/-->
+<!--        /*}*/-->
+
+<!--        /*체크박스 완료 항목*/-->
+<!--        .completed {-->
+<!--            text-decoration: line-through;-->
+<!--            color: #EB5757;-->
+<!--        }-->
+<!--        .main-content li {-->
+<!--            margin-left: 20px;-->
+<!--        }-->
+
+<!--        input[type="checkbox"]{-->
+<!--            display: none;-->
+<!--        }-->
+<!--        input[type="checkbox"]+label{-->
+<!--            width: 40px;-->
+<!--            height: 40px;-->
+<!--            position: relative;-->
+<!--            display: inline-block;-->
+<!--            border-radius: 17px;-->
+<!--            border: 3px solid #EB5757;-->
+<!--            cursor: pointer;-->
+<!--            vertical-align: middle;-->
+<!--            flex-shrink: 0;-->
+<!--        }-->
+<!--        input[id="check"]:checked + label::after{-->
+<!--            content:url("/images/Check.svg");-->
+<!--            width: 42px;-->
+<!--            height: 45px;-->
+<!--            position: absolute;-->
+<!--            left: 3px;-->
+<!--            bottom:1px;-->
+<!--        }-->
+<!--        li span {-->
+<!--            flex: 1;-->
+<!--            margin-right: 10px;-->
+<!--            margin-left: 20px;-->
+<!--            font-size: 25px;-->
+
+<!--        }-->
+<!--        li form {-->
+<!--            margin: 0;-->
+<!--        }-->
+<!--        li button {-->
+<!--            background-color: #dc3545;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 5px 10px;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--            margin-left: 5px;-->
+<!--        }-->
+<!--        li button:hover {-->
+<!--            background-color: #c82333;-->
+<!--        }-->
+<!--        .edit-button {-->
+<!--            background-color: #007bff;-->
+<!--            margin-left: 5px;-->
+<!--        }-->
+<!--        .edit-button:hover {-->
+<!--            background-color: #0056b3;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <div class="sidebar">-->
+<!--        <h2>All Tasks</h2>-->
+<!--        <ul>-->
+<!--            <li>Favourites</li>-->
+<!--            <li>Work</li>-->
+<!--            <li>Study</li>-->
+<!--            <li>Sports</li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <div class="content">-->
+<!--        <div class="header">-->
+<!--            <h1>All Tasks</h1>-->
+<!--            <form method="post" action="/addTodo">-->
+<!--                <input type="text" name="title" placeholder="제목을 입력하세요" required/>-->
+<!--                <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>-->
+<!--                <input type="submit" value="Add Todo"/>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        <div class="main-content">-->
+<!--            <ul>-->
+<!--                <li th:each="todo : ${todos}" th:classappend="${todo.completed} ? 'completed' : ''">-->
+<!--                    &lt;!&ndash;체크박스 완료 항목 줄 긋기 실패 코드&ndash;&gt;-->
+<!--                    &lt;!&ndash;<input type="checkbox" th:checked="${todo.completed}" th:attr="onchange='window.location.href=\'/complete/\' + [[${todo.id}]]'" /> &ndash;&gt;-->
+<!--                    <input id="check"  type="checkbox" th:checked="${todo.completed}" onchange="toggleCompletion(this)">-->
+<!--                    <label for="check"></label>-->
+<!--                    <span th:text="${todo.title} + ' - ' + ${todo.todo}"></span>-->
+<!--                    <div>-->
+<!--                        <a th:href="@{/edit/{id}(id=${todo.id})}">-->
+<!--                            <button type="button" class="edit-button">수정</button>-->
+<!--                        </a>-->
+<!--                        <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post">-->
+<!--                            <input type="hidden" name="_method" value="delete"/>-->
+<!--                            <button type="button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'">삭제</button>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; 체크박스 완료 시 줄 긋기&ndash;&gt;-->
+<!--<script th:inline="javascript">-->
+<!--    function toggleCompletion(checkbox) {-->
+<!--        var listItem = checkbox.parentElement;-->
+<!--        if (checkbox.checked) {-->
+<!--            listItem.classList.add('completed');-->
+<!--        }else {-->
+<!--            listItem.classList.remove('completed');-->
+<!--        }-->
+<!--    }-->
+
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Todo App</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+<!--        .container {-->
+<!--            display: flex;-->
+<!--            min-height: 100vh;-->
+<!--        }-->
+<!--        .sidebar {-->
+<!--            width: 200px;-->
+<!--            background-color: #ffffff;-->
+<!--            padding: 20px;-->
+<!--            border-right: 1px solid #dddddd;-->
+<!--        }-->
+<!--        .sidebar h2 {-->
+<!--            color: black;-->
+<!--            margin-top: 80px;-->
+<!--            margin-left: 40px;-->
+<!--            margin-bottom: 30px;-->
+<!--            font-size: 30px;-->
+<!--        }-->
+<!--        .sidebar ul {-->
+<!--            list-style-type: none;-->
+<!--            padding: 0;-->
+<!--        }-->
+<!--        .sidebar ul li {-->
+<!--            margin-left: 30px;-->
+<!--            margin-bottom: 30px;-->
+<!--            font-size: 27px;-->
+<!--        }-->
+<!--        .sidebar li:hover {-->
+<!--            color: #575757;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        .content {-->
+<!--            flex: 1;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            padding:20px;-->
+<!--        }-->
+<!--        .header {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            border-bottom: 1px solid #dddddd;-->
+<!--            margin-bottom: 20px;-->
+<!--            margin: 32px 16px 40px;-->
+<!--        }-->
+<!--        .header h1 {-->
+<!--            margin: 0 0 20px;-->
+<!--            font-size: 50px;-->
+<!--            color: #333;-->
+<!--        }-->
+<!--        .header form {-->
+<!--            display: flex;-->
+<!--            justify-content: left;-->
+<!--            margin-bottom: 0;-->
+<!--        }-->
+<!--        .header form input[type="text"] {-->
+<!--            background-color: #E1DEDE;-->
+<!--            margin-top: 10px;-->
+<!--            padding: 10px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 5px;-->
+<!--            font-size: 16px;-->
+<!--            width: 100%;-->
+<!--        }-->
+<!--        .header form input[type="submit"] {-->
+<!--            padding: 10px 20px;-->
+<!--            border: none;-->
+<!--            background-color: #28a745;-->
+<!--            color: white;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        .header form input[type="submit"]:hover {-->
+<!--            background-color: #218838;-->
+<!--        }-->
+<!--        .main-content {-->
+<!--            flex: 1;-->
+<!--        }-->
+<!--        hr {-->
+<!--            border: 0;-->
+<!--            border-top: 1px solid #ccc;-->
+<!--            margin: 20px 0;-->
+<!--        }-->
+<!--        ul {-->
+<!--            list-style: none;-->
+<!--            padding: 0;-->
+<!--        }-->
+<!--        .container li {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            padding: 10px;-->
+<!--            margin-bottom: 5px;-->
+<!--            background-color: #ffffff;-->
+<!--        }-->
+<!--        .completed {-->
+<!--            text-decoration: line-through;-->
+<!--            color: #EB5757;-->
+<!--        }-->
+<!--        .main-content li {-->
+<!--            margin-left: 20px;-->
+<!--        }-->
+<!--        input[type="checkbox"] {-->
+<!--            display: none;-->
+<!--        }-->
+<!--        input[type="checkbox"] + label {-->
+<!--            width: 40px;-->
+<!--            height: 40px;-->
+<!--            position: relative;-->
+<!--            display: inline-block;-->
+<!--            border-radius: 17px;-->
+<!--            border: 3px solid #EB5757;-->
+<!--            cursor: pointer;-->
+<!--            vertical-align: middle;-->
+<!--            flex-shrink: 0;-->
+<!--        }-->
+<!--        input[type="checkbox"]:checked + label::after {-->
+<!--            content: url("/images/Check.svg");-->
+<!--            width: 42px;-->
+<!--            height: 45px;-->
+<!--            position: absolute;-->
+<!--            left: 3px;-->
+<!--            bottom: 1px;-->
+<!--        }-->
+<!--        li span {-->
+<!--            flex: 1;-->
+<!--            margin-right: 10px;-->
+<!--            margin-left: 20px;-->
+<!--            font-size: 25px;-->
+<!--        }-->
+<!--        li form {-->
+<!--            margin: 0;-->
+<!--        }-->
+<!--        li button {-->
+<!--            background-color: #dc3545;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 5px 10px;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--            margin-left: 5px;-->
+<!--        }-->
+<!--        li button:hover {-->
+<!--            background-color: #c82333;-->
+<!--        }-->
+<!--        .edit-button {-->
+<!--            background-color: #007bff;-->
+<!--            margin-left: 5px;-->
+<!--        }-->
+<!--        .edit-button:hover {-->
+<!--            background-color: #0056b3;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <div class="sidebar">-->
+<!--        <h2>All Tasks</h2>-->
+<!--        <ul>-->
+<!--            <li>Favourites</li>-->
+<!--            <li>Work</li>-->
+<!--            <li>Study</li>-->
+<!--            <li>Sports</li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <div class="content">-->
+<!--        <div class="header">-->
+<!--            <h1>All Tasks</h1>-->
+<!--            <form method="post" action="/addTodo">-->
+<!--                <input type="text" name="title" placeholder="제목을 입력하세요" required/>-->
+<!--                <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>-->
+<!--                <input type="submit" value="Add Todo"/>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        <div class="main-content">-->
+<!--            <ul>-->
+<!--                <li th:each="todo, iterStat : ${todos}" th:classappend="${todo.completed} ? 'completed' : ''">-->
+<!--                    <input id="check-[[${todo.id}]]" type="checkbox" th:checked="${todo.completed}" onchange="toggleCompletion(this, [[${todo.id}]])">-->
+<!--                    <label for="check-[[${todo.id}]]"></label>-->
+<!--                    <span th:text="${todo.title} + ' - ' + ${todo.todo}"></span>-->
+<!--                    <div>-->
+<!--                        <a th:href="@{/edit/{id}(id=${todo.id})}">-->
+<!--                            <button type="button" class="edit-button">수정</button>-->
+<!--                        </a>-->
+<!--                        <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post">-->
+<!--                            <input type="hidden" name="_method" value="delete"/>-->
+<!--                            <button type="button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'">삭제</button>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; 체크박스 완료 시 줄 긋기&ndash;&gt;-->
+<!--<script th:inline="javascript">-->
+<!--    function toggleCompletion(checkbox, id) {-->
+<!--        var listItem = checkbox.parentElement;-->
+<!--        if (checkbox.checked) {-->
+<!--            listItem.classList.add('completed');-->
+<!--        } else {-->
+<!--            listItem.classList.remove('completed');-->
+<!--        }-->
+<!--        // 서버로 완료 상태 전송-->
+<!--        fetch('/complete/' + id, {-->
+<!--            method: 'POST'-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
 
 <!--초기 코드-->
 <!--<html lang="ko"-->
