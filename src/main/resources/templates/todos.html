@@ -221,8 +221,30 @@
     <div class="sidebar">
         <h2>All Tasks</h2>
         <ul>
-            <li th:each="category : ${categories}" th:text="${category}"></li>
+
+            <li th:each="category : ${categories}">
+                <span th:text="${category}"></span>
+<!--                <div class="sidebar_btn">-->
+<!--                    <a th:href="@{/sidebarEdit/{id}(id=${category.id})}">-->
+<!--                        <button type="button" class="edit-button">-->
+<!--                            <img width="45" height="45" src="/images/edit.svg" alt=""/>-->
+<!--                        </button>-->
+<!--                    </a>-->
+<!--                    <form th:id="'delete_form_' + ${category.id}" th:action="'/sidebar/' + ${category.id}" method="post">-->
+<!--                        <input type="hidden" name="_method" value="delete"/>-->
+<!--                        <button type="button" class="delete-button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${category.id} + '\').submit();'">-->
+<!--                            <img width="50" height="50" src="/images/delete.svg" alt="">-->
+<!--                        </button>-->
+<!--                    </form>-->
+<!--                </div>-->
+            </li>
+
+            </li>
         </ul>
+        <form method="post" action="/add">
+            <input type="text" name="category" placeholder="카테고리를 입력해라."/>
+            <input type="submit" value="add">
+        </form>
     </div>
     <div class="content">
         <div class="header">
@@ -230,7 +252,10 @@
             <form method="post" action="/addTodo">
                 <input type="text" name="title" placeholder="제목을 입력하세요" required/>
                 <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>
-                <input type="text" name="category" placeholder="카테고리를 입력하세요" />
+                <select name="category">
+                    <option value="none">tags</option>
+                    <option  th:each="category : ${categories}" th:text="${category}"></option>
+                </select>
                 <input type="submit" value="Add Todo"/>
             </form>
 

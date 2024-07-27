@@ -1,11 +1,14 @@
 package com.example.todoapp.controller;
 
+import com.example.todoapp.domain.Category;
 import com.example.todoapp.domain.Todo;
+import com.example.todoapp.repository.CategoryRepository;
 import com.example.todoapp.repository.TodoRepository;
 import com.example.todoapp.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 public class TodoController {
     private final TodoService todoService;
     private final TodoRepository todoRepository;
+    private final CategoryRepository categoryRepository;
 
     @GetMapping("/")
     public String index(Model model){
@@ -26,7 +30,7 @@ public class TodoController {
     }
 
     @PostMapping("/addTodo")
-    public String addTodo(@RequestParam("todo") String todo, @RequestParam("title") String title, @RequestParam("category") String category){
+    public String addTodo(@RequestParam("todo") String todo, @RequestParam("title") String title, @Validated String category){
         //DB에 저장
         Todo newTodo = new Todo();
         newTodo.setTodo(todo);
@@ -35,6 +39,13 @@ public class TodoController {
         newTodo.setCompleted(false);
         todoService.save(newTodo);
         return "redirect:/"; //"/"로 자동으로 이동하라
+    }
+    @PostMapping("/add")
+    public String addCategory(@RequestParam("category") String category){
+        Category newCategory = new Category();
+        newCategory.setCategory(category);
+        todoService.save(newCategory);
+        return "redirect:/";
     }
 
     @DeleteMapping("/{id}")
@@ -46,7 +57,23 @@ public class TodoController {
     @GetMapping("/edit/{id}")
     public String editTodoForm(@PathVariable Long id, Model model) {
         Todo todo = todoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
+        List<String> categories = todoService.findAllCategories();
         model.addAttribute("todo", todo);
+        model.addAttribute("categories", categories);
+        return "editTodo";
+    }
+//사이드바 수정 삭제
+    @DeleteMapping("/sidebar/{id}")
+    public String deleteSidebar(@PathVariable Long id) {
+        categoryRepository.deleteById(id);
+        return "redirect:/";
+    }
+    @GetMapping("/sidebarEdit/{id}")
+    public String editSidebar(@PathVariable Long id, Model model) {
+        Category category = todoService.findByIdCategory(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
+        List<String> categories = todoService.findAllCategories();
+        model.addAttribute("category", category);
+        model.addAttribute("categories", categories);
         return "editTodo";
     }
 
