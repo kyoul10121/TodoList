@@ -1,10 +1,7 @@
 package com.example.todoapp.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity(name = "Todo")
@@ -22,9 +19,13 @@ public class Todo { // todo table과 관련이 있고 '@Id'
     private String todo;
 
     private String title;
+
+    private String category;
+
     private boolean completed;
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -49,6 +50,15 @@ public class Todo { // todo table과 관련이 있고 '@Id'
         this.title = title;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+
     public boolean isCompleted() {
         return completed;
     }
@@ -56,4 +66,6 @@ public class Todo { // todo table과 관련이 있고 '@Id'
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
+
+
 }
