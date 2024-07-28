@@ -31,7 +31,7 @@
             padding: 10px;
             margin-top: 80px;
             margin-left: 40px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-size: 30px;
         }
         .sidebar ul {
@@ -39,10 +39,13 @@
             padding: 0;
         }
         .sidebar ul li {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
             padding: 10px;
-            margin: 10px 40px 30px;
+            margin: 10px 20px 10px;
             font-size: 27px;
+            position: relative; /* 메뉴 위치를 조정하기 위해 추가 */
         }
         .sidebar li:hover {
             color: #575757;
@@ -91,6 +94,20 @@
         }
         .header form input[type="submit"]:hover {
             background-color: #218838;
+        }
+        .header select {
+            background-color: #E1DEDE;
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            color: #333;
+        }
+        .header option {
+            background-color: #ffffff;
+            padding: 10px;
         }
         .main-content {
             flex: 1;
@@ -154,6 +171,79 @@
             display: flex;
             align-items: center;
         }
+        /*사이드바 카테고리 추가 버튼*/
+        .add-category-button {
+            background: none;
+            border: none;
+            color: #ABABAB;
+            font-size: 25px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            margin-left: 40px;
+            text-decoration: none;
+        }
+        .plus-icon {
+            font-size: 24px;
+            margin-right: 5px;
+        }
+
+        /*사이드바 더보기 버튼*/
+        .more-button-container {
+            display: flex;
+            position: relative;
+            align-items: center;
+        }
+
+        .more-button {
+            border: none;
+            cursor: pointer;
+            display: none;
+            position: relative; /* 더 이상 절대 위치가 아님 */
+            right: 0;
+        }
+
+        .sidebar ul li:hover .more-button {
+            display: block;
+        }
+
+        .more-button img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .menu {
+            display: none;
+            position: absolute;
+            top: 50%;
+            right: -70px;
+            transform: translateY(-50%);
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .more-button-container:hover .menu {
+            display: block;
+        }
+
+        .menu button {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .menu button:hover {
+            background-color: #f5f5f5;
+        }
+
         /*테블릿일 경우*/
         @media screen and (max-width:  768px){
             .sidebar {
@@ -221,30 +311,36 @@
     <div class="sidebar">
         <h2>All Tasks</h2>
         <ul>
-<!-- 김홍일 여기야 !!!!-->
             <li th:each="category : ${categories}">
                 <span th:text="${category}"></span>
-<!--                <div class="sidebar_btn">-->
-<!--                    <a th:href="@{/sidebarEdit/{id}(id=${category.id})}">-->
-<!--                        <button type="button" class="edit-button">-->
-<!--                            <img width="45" height="45" src="/images/edit.svg" alt=""/>-->
-<!--                        </button>-->
-<!--                    </a>-->
-<!--                    <form th:id="'delete_form_' + ${category.id}" th:action="'/sidebar/' + ${category.id}" method="post">-->
-<!--                        <input type="hidden" name="_method" value="delete"/>-->
-<!--                        <button type="button" class="delete-button" th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${category.id} + '\').submit();'">-->
-<!--                            <img width="50" height="50" src="/images/delete.svg" alt="">-->
-<!--                        </button>-->
-<!--                    </form>-->
-<!--                </div>-->
-            </li>
-
+                <div class="more-button-container">
+                    <button class="more-button">
+                        <img src="/images/more.svg" alt="More"/>
+                    </button>
+                    <div class="menu">
+                        <a th:href="@{/sidebarEdit/{category}(category=${category})}">
+                            <button type="button" class="edit-button">Edit</button>
+                        </a>
+                        <form th:action="@{/sidebar/{category}(category=${category})}" method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button type="submit" class="delete-button" onclick="return confirm('정말로 삭제하시겠습니까?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
             </li>
         </ul>
-        <form method="post" action="/add">
-            <input type="text" name="category" placeholder="카테고리를 입력해라."/>
-            <input type="submit" value="add">
-        </form>
+        <a th:href="@{/addCategory}" class="add-category-button">
+            <span class="plus-icon">+</span> Add New List
+        </a>
+<!--        <form method="post" action="/add" class="add-category-form">-->
+<!--            <button type="button" class="add-category-button" onclick="toggleCategoryInput()">-->
+<!--                <span class="plus-icon">+</span> Add New List-->
+<!--            </button>-->
+<!--            <div class="category-input" style="display: none;">-->
+<!--                <input type="text" name="category" placeholder="New Category"/>-->
+<!--                <input type="submit" value="Add"/>-->
+<!--            </div>-->
+<!--        </form>-->
     </div>
     <div class="content">
         <div class="header">
@@ -253,12 +349,11 @@
                 <input type="text" name="title" placeholder="제목을 입력하세요" required/>
                 <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>
                 <select name="category">
-                    <option value="none">tags</option>
+                    <option value="">카테고리를 선택하세요</option>
                     <option  th:each="category : ${categories}" th:text="${category}"></option>
                 </select>
                 <input type="submit" value="Add Todo"/>
             </form>
-
         </div>
         <div class="main-content">
             <ul>
@@ -296,6 +391,48 @@
             listItem.classList.remove('completed');
         }
     }
+</script>
+<script>
+// category add
+    function toggleCategoryInput() {
+        var categoryInputDiv = document.querySelector('.category-input');
+        if (categoryInputDiv.style.display === 'none' || categoryInputDiv.style.display === '') {
+            categoryInputDiv.style.display = 'flex';
+        } else {
+            categoryInputDiv.style.display = 'none';
+        }
+    }
+
+</script>
+<script>
+<!--    히든 메뉴바 -->
+document.addEventListener('click', function(event) {
+    var isClickInside = event.target.closest('.sidebar ul li');
+    if (!isClickInside) {
+        var menus = document.querySelectorAll('.menu');
+        menus.forEach(function(menu) {
+            menu.style.display = 'none';
+        });
+    }
+});
+    // function toggleMenu(button) {
+    //     var menu = button.nextElementSibling;
+    //     if (menu.style.display === 'none' || menu.style.display === '') {
+    //         menu.style.display = 'block';
+    //     } else {
+    //         menu.style.display = 'none';
+    //     }
+    // }
+    //
+    // document.addEventListener('click', function(event) {
+    //     var isClickInside = event.target.closest('.sidebar ul li');
+    //     if (!isClickInside) {
+    //         var menus = document.querySelectorAll('.menu');
+    //         menus.forEach(function(menu) {
+    //             menu.style.display = 'none';
+    //         });
+    //     }
+    // });
 </script>
 </body>
 </html>

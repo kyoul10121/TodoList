@@ -40,6 +40,11 @@ public class TodoController {
         todoService.save(newTodo);
         return "redirect:/"; //"/"로 자동으로 이동하라
     }
+    @GetMapping("/addCategory")
+    public String addCategoryForm() {
+        return "addCategory";
+    }
+
     @PostMapping("/add")
     public String addCategory(@RequestParam("category") String category){
         Category newCategory = new Category();
