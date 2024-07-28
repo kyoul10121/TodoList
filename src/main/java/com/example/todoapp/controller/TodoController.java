@@ -23,7 +23,7 @@ public class TodoController {
     @GetMapping("/")
     public String index(Model model){
         List<Todo> todos = todoService.findAll();
-        List<String> categories = todoService.findAllCategories();
+        List<Category> categories = todoService.findAllCategories();
         model.addAttribute("todos", todos);
         model.addAttribute("categories", categories);
         return "todos";
@@ -62,12 +62,12 @@ public class TodoController {
     @GetMapping("/edit/{id}")
     public String editTodoForm(@PathVariable Long id, Model model) {
         Todo todo = todoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
-        List<String> categories = todoService.findAllCategories();
+        List<Category> categories = todoService.findAllCategories();
         model.addAttribute("todo", todo);
         model.addAttribute("categories", categories);
         return "editTodo";
     }
-//사이드바 수정 삭제
+    //사이드바 수정 삭제
     @DeleteMapping("/sidebar/{id}")
     public String deleteSidebar(@PathVariable Long id) {
         categoryRepository.deleteById(id);
@@ -76,14 +76,22 @@ public class TodoController {
     @GetMapping("/sidebarEdit/{id}")
     public String editSidebar(@PathVariable Long id, Model model) {
         Category category = todoService.findByIdCategory(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
-        List<String> categories = todoService.findAllCategories();
+        List<Category> categories = todoService.findAllCategories();
         model.addAttribute("category", category);
         model.addAttribute("categories", categories);
-        return "editTodo";
+        return "editCategory";
+    }
+    @PostMapping("/sidebarUpdate/{id}")
+    public String updateCategory(@PathVariable Long id, @RequestParam("category") String category) {
+        Category existingCategory = todoService.findByIdCategory(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
+        existingCategory.setCategory(category);
+        todoService.save(existingCategory);
+        return "redirect:/";
     }
 
+
     @PostMapping("/update/{id}")
-    public String updateTodo(@PathVariable Long id, @RequestParam("todo") String todo, @RequestParam("title") String title,@RequestParam("category") String category) {
+    public String updateTodo(@PathVariable Long id, @RequestParam("todo") String todo, @RequestParam("title") String title, @RequestParam("category") String category) {
         Todo existingTodo = todoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
         existingTodo.setTodo(todo);
         existingTodo.setTitle(title);

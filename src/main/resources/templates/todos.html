@@ -312,16 +312,16 @@
         <h2>All Tasks</h2>
         <ul>
             <li th:each="category : ${categories}">
-                <span th:text="${category}"></span>
+                <span th:text="${category.category}"></span>
                 <div class="more-button-container">
                     <button class="more-button">
                         <img src="/images/more.svg" alt="More"/>
                     </button>
                     <div class="menu">
-                        <a th:href="@{/sidebarEdit/{category}(category=${category})}">
+                        <a th:href="@{/sidebarEdit/{id}(id=${category.id})}">
                             <button type="button" class="edit-button">Edit</button>
                         </a>
-                        <form th:action="@{/sidebar/{category}(category=${category})}" method="post" style="display:inline;">
+                        <form th:action="@{/sidebar/{id}(id=${category.id})}" method="post" style="display:inline;">
                             <input type="hidden" name="_method" value="delete"/>
                             <button type="submit" class="delete-button" onclick="return confirm('정말로 삭제하시겠습니까?')">Delete</button>
                         </form>
@@ -332,15 +332,15 @@
         <a th:href="@{/addCategory}" class="add-category-button">
             <span class="plus-icon">+</span> Add New List
         </a>
-<!--        <form method="post" action="/add" class="add-category-form">-->
-<!--            <button type="button" class="add-category-button" onclick="toggleCategoryInput()">-->
-<!--                <span class="plus-icon">+</span> Add New List-->
-<!--            </button>-->
-<!--            <div class="category-input" style="display: none;">-->
-<!--                <input type="text" name="category" placeholder="New Category"/>-->
-<!--                <input type="submit" value="Add"/>-->
-<!--            </div>-->
-<!--        </form>-->
+        <!--        <form method="post" action="/add" class="add-category-form">-->
+        <!--            <button type="button" class="add-category-button" onclick="toggleCategoryInput()">-->
+        <!--                <span class="plus-icon">+</span> Add New List-->
+        <!--            </button>-->
+        <!--            <div class="category-input" style="display: none;">-->
+        <!--                <input type="text" name="category" placeholder="New Category"/>-->
+        <!--                <input type="submit" value="Add"/>-->
+        <!--            </div>-->
+        <!--        </form>-->
     </div>
     <div class="content">
         <div class="header">
@@ -350,7 +350,7 @@
                 <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>
                 <select name="category">
                     <option value="">카테고리를 선택하세요</option>
-                    <option  th:each="category : ${categories}" th:text="${category}"></option>
+                    <option  th:each="category : ${categories}" th:text="${category.category}"></option>
                 </select>
                 <input type="submit" value="Add Todo"/>
             </form>
@@ -393,7 +393,7 @@
     }
 </script>
 <script>
-// category add
+    // category add
     function toggleCategoryInput() {
         var categoryInputDiv = document.querySelector('.category-input');
         if (categoryInputDiv.style.display === 'none' || categoryInputDiv.style.display === '') {
@@ -405,16 +405,16 @@
 
 </script>
 <script>
-<!--    히든 메뉴바 -->
-document.addEventListener('click', function(event) {
-    var isClickInside = event.target.closest('.sidebar ul li');
-    if (!isClickInside) {
-        var menus = document.querySelectorAll('.menu');
-        menus.forEach(function(menu) {
-            menu.style.display = 'none';
-        });
-    }
-});
+    <!--    히든 메뉴바 -->
+    document.addEventListener('click', function(event) {
+        var isClickInside = event.target.closest('.sidebar ul li');
+        if (!isClickInside) {
+            var menus = document.querySelectorAll('.menu');
+            menus.forEach(function(menu) {
+                menu.style.display = 'none';
+            });
+        }
+    });
     // function toggleMenu(button) {
     //     var menu = button.nextElementSibling;
     //     if (menu.style.display === 'none' || menu.style.display === '') {
@@ -436,29 +436,3 @@ document.addEventListener('click', function(event) {
 </script>
 </body>
 </html>
-
-
-<!--초기 코드-->
-<!--<html lang="ko"-->
-<!--      xmlns:th="http://www.thymeleaf.org"-->
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">-->
-<!--    <h1>Todo App</h1>-->
-<!--    <form method="post" action="/addTodo"> &lt;!&ndash;form태그의 todo에 값을 입력하고 submit버튼을 누르면 /addTodo에게 post형식으로 값을 전달하겠다.&ndash;&gt;-->
-<!--        <input type="text" name="todo"/>-->
-<!--        <input type="submit" name="Add Todo"/>-->
-<!--    </form>-->
-<!--    <hr>-->
-<!--    <ul>-->
-<!--        <li th:each="todo : ${todos}">-->
-<!--            <span th:text="${todo.todo}"></span>-->
-<!--&lt;!&ndash;        <form id="delete_form" action="" method="post">&ndash;&gt;-->
-<!--            <form th:id="'delete_form_' + ${todo.id}" th:action="'/' + ${todo.id}" method="post">-->
-<!--&lt;!&ndash;            <input type="hidden" name="_method" th:value="delete"/>&ndash;&gt;-->
-<!--                <input type="hidden" name="_method" value="delete"/>-->
-<!--&lt;!&ndash;            <a onclick="if (confirm('정말로 삭제하시겠습니까?')) document.getElementById('delete_form').submit();" class="btn btn-danger">삭제</a>&ndash;&gt;-->
-<!--                <button th:onclick="'if (confirm(\'정말로 삭제하시겠습니까?\')) document.getElementById(\'delete_form_' + ${todo.id} + '\').submit();'" class="btn btn-danger">삭제</button>-->
-<!--            </form>-->
-<!--            -->
-<!--        </li>-->
-<!--    </ul>-->
-<!--</html>-->
