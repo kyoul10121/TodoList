@@ -15,58 +15,20 @@ public class Todo { // todo table과 관련이 있고 '@Id'
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;    //이 아이디는 자동 증가하는 값이다.(바로 위에 줄의 뜻 -> '@GeneratedValue')
 
-
     @NotNull
+    @Column
     private String todo;
 
+    @Column
     private String title;
 
+    @Column
     private String category;
 
+    @Column
     private boolean completed;
 
-    // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTodo() {
-        return todo;
-    }
-
-    public void setTodo(String todo) {
-        this.todo = todo;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
+    @Column
+    private Long category_id;
 
 }

@@ -30,12 +30,13 @@ public class TodoController {
     }
 
     @PostMapping("/addTodo")
-    public String addTodo(@RequestParam("todo") String todo, @RequestParam("title") String title, @Validated String category){
+    public String addTodo(@RequestParam("todo") String todo, @RequestParam("title") String title, @Validated Long id){
         //DB에 저장
         Todo newTodo = new Todo();
         newTodo.setTodo(todo);
         newTodo.setTitle(title);
-        newTodo.setCategory(category);
+//      newTodo.setCategory(category);
+        newTodo.setCategory_id(id); //id값으로 넘겨주면 UI에서도 id로 받아야 한다. : <select name="id"> 여기서 name을 'id'로 적어준 이유
         newTodo.setCompleted(false);
         todoService.save(newTodo);
         return "redirect:/"; //"/"로 자동으로 이동하라
@@ -92,11 +93,11 @@ public class TodoController {
 
 
     @PostMapping("/update/{id}")
-    public String updateTodo(@PathVariable Long id, @RequestParam("todo") String todo, @RequestParam("title") String title, @RequestParam("category") String category) {
+    public String updateTodo(@PathVariable Long id, @RequestParam("todo") String todo, @RequestParam("title") String title, @RequestParam("category") Long category) {
         Todo existingTodo = todoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid todo Id:" + id));
         existingTodo.setTodo(todo);
         existingTodo.setTitle(title);
-        existingTodo.setCategory(category);
+        existingTodo.setCategory_id(category);
         todoService.save(existingTodo);
         return "redirect:/";
     }

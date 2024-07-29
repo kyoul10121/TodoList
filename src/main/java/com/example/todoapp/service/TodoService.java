@@ -19,7 +19,7 @@ public class TodoService {
     private CategoryRepository categoryRepository;
 
     public List<Todo> findAll() {
-        return todoRepository.findAll();
+        return todoRepository.findTodoJoinCategory();
     }
 
     public Optional<Todo> findById(Long id) {

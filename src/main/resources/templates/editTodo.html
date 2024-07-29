@@ -63,7 +63,7 @@
         <input type="text" name="todo" th:value="${todo.todo}" placeholder="할 일을 입력하세요" required/>
         <select name="category">
             <option value="none" hidden>Category</option>
-            <option th:each="category : ${categories}" th:text="${category.category}"></option>
+            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.category}"></option>
         </select>
 <!--        <input type="text" name="category" th:value="${todo.category}" placeholder="카테고리를 입력하세요"/>-->
         <input type="submit" value="Update Todo"/>

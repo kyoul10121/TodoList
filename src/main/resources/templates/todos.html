@@ -347,7 +347,7 @@
             </li>
         </ul>
         <a th:href="@{/addCategory}" class="add-category-button">
-            <span class="plus-icon">+</span> Add New List
+            <span class="plus-icon">+</span> New Category
         </a>
     </div>
     <div class="content">
@@ -356,9 +356,9 @@
             <form method="post" action="/addTodo">
                 <input type="text" name="title" placeholder="제목을 입력하세요" required/>
                 <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>
-                <select name="category">
+                <select name="id">
                     <option value="" style="color: #575757">카테고리를 선택하세요</option>
-                    <option  th:each="category : ${categories}" th:text="${category.category}"></option>
+                    <option  th:each="category : ${categories}" th:value="${category.id}" th:text="${category.category}"></option>
                 </select>
                 <input type="submit" value="Add Todo"/>
             </form>
@@ -427,35 +427,6 @@
             });
         }
     });
-    // 랜덤 색상
-    // let randomBrightColor = () => {
-    //     let color_r = Math.floor(Math.random() * 127 + 60).toString(16);
-    //     let color_g = Math.floor(Math.random() * 127 + 60).toString(16);
-    //     let color_b = Math.floor(Math.random() * 127 + 60).toString(16);
-    //     return `#${color_r+color_g+color_b}`;
-    // }
-    //
-    // for(todoCategory of document.getElementsByClassName('todoCategory')){
-    //     todoCategory.style.backgroundColor = randomBrightColor();
-    // }
-    // function toggleMenu(button) {
-    //     var menu = button.nextElementSibling;
-    //     if (menu.style.display === 'none' || menu.style.display === '') {
-    //         menu.style.display = 'block';
-    //     } else {
-    //         menu.style.display = 'none';
-    //     }
-    // }
-    //
-    // document.addEventListener('click', function(event) {
-    //     var isClickInside = event.target.closest('.sidebar ul li');
-    //     if (!isClickInside) {
-    //         var menus = document.querySelectorAll('.menu');
-    //         menus.forEach(function(menu) {
-    //             menu.style.display = 'none';
-    //         });
-    //     }
-    // });
 </script>
 <script>
     let colors = [
@@ -467,10 +438,6 @@
         "#33FFF2", // Cyan-
         "#9B51E0", // Purple
         "#ff93ac", // Pink-
-
-
-
-
     ];
 
     let colorIndex = 0;
@@ -508,7 +475,5 @@
     const config = { childList: true, subtree: true };
     observer.observe(document.querySelector('.main-content ul'), config);
 </script>
-
-
 </body>
 </html>
