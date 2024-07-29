@@ -171,6 +171,20 @@
             display: flex;
             align-items: center;
         }
+
+
+        div.todoCategory {
+            display: flex;
+            border-radius: 40px;
+            margin: 10px;
+            background-color: #4caf50;
+        }
+        .todoCategory span {
+            margin: 7px 20px;
+            font-size: 13px;
+            color: #ffffff;
+            text-align: center;
+        }
         /*사이드바 카테고리 추가 버튼*/
         .add-category-button {
             background: none;
@@ -228,6 +242,9 @@
 
         .more-button-container:hover .menu {
             display: block;
+        }
+        .more-button:hover {
+
         }
 
         .menu button {
@@ -332,15 +349,6 @@
         <a th:href="@{/addCategory}" class="add-category-button">
             <span class="plus-icon">+</span> Add New List
         </a>
-        <!--        <form method="post" action="/add" class="add-category-form">-->
-        <!--            <button type="button" class="add-category-button" onclick="toggleCategoryInput()">-->
-        <!--                <span class="plus-icon">+</span> Add New List-->
-        <!--            </button>-->
-        <!--            <div class="category-input" style="display: none;">-->
-        <!--                <input type="text" name="category" placeholder="New Category"/>-->
-        <!--                <input type="submit" value="Add"/>-->
-        <!--            </div>-->
-        <!--        </form>-->
     </div>
     <div class="content">
         <div class="header">
@@ -349,7 +357,7 @@
                 <input type="text" name="title" placeholder="제목을 입력하세요" required/>
                 <input type="text" name="todo" placeholder="할 일을 입력하세요" required/>
                 <select name="category">
-                    <option value="">카테고리를 선택하세요</option>
+                    <option value="" style="color: #575757">카테고리를 선택하세요</option>
                     <option  th:each="category : ${categories}" th:text="${category.category}"></option>
                 </select>
                 <input type="submit" value="Add Todo"/>
@@ -359,9 +367,13 @@
             <ul>
                 <li th:each="todo, iterStat : ${todos}" th:classappend="${todo.completed} ? 'completed' : ''">
                     <input th:id="'check' + ${iterStat.index}" type="checkbox" th:checked="${todo.completed}" onchange="toggleCompletion(this)">
-                    <label th:for="'check' + ${iterStat.index}"></label>
+                    <label th:for="'check' + ${iterStat.index}">
+                    </label>
                     <span th:text="${todo.title} + ' - ' + ${todo.todo}"></span>
-                    <span th:text="${todo.category}"></span>
+                    <div class="todoCategory" >
+                        <span th:text="${todo.category}"></span>
+                    </div>
+
                     <!-- 수정 , 삭제 버튼 -->
                     <div class="btn">
                         <a th:href="@{/edit/{id}(id=${todo.id})}">
@@ -415,6 +427,17 @@
             });
         }
     });
+    // 랜덤 색상
+    // let randomBrightColor = () => {
+    //     let color_r = Math.floor(Math.random() * 127 + 60).toString(16);
+    //     let color_g = Math.floor(Math.random() * 127 + 60).toString(16);
+    //     let color_b = Math.floor(Math.random() * 127 + 60).toString(16);
+    //     return `#${color_r+color_g+color_b}`;
+    // }
+    //
+    // for(todoCategory of document.getElementsByClassName('todoCategory')){
+    //     todoCategory.style.backgroundColor = randomBrightColor();
+    // }
     // function toggleMenu(button) {
     //     var menu = button.nextElementSibling;
     //     if (menu.style.display === 'none' || menu.style.display === '') {
@@ -434,5 +457,58 @@
     //     }
     // });
 </script>
+<script>
+    let colors = [
+        "#EB5757", // Red
+        "#F2994A", // Orange
+        "#EDC22F", // Yellow
+        "#27AE60", // Green
+        "#2F80ED", // Blue
+        "#33FFF2", // Cyan-
+        "#9B51E0", // Purple
+        "#ff93ac", // Pink-
+
+
+
+
+    ];
+
+    let colorIndex = 0;
+
+    let randomBrightColor = () => {
+        let color = colors[colorIndex % colors.length];
+        colorIndex++;
+        return color;
+    }
+
+    let categoryColors = {}; // 카테고리별 색상을 저장할 객체
+
+    let setCategoryColors = () => {
+        for (let todoCategory of document.getElementsByClassName('todoCategory')) {
+            let categoryName = todoCategory.innerText;
+            if (!categoryColors[categoryName]) {
+                categoryColors[categoryName] = randomBrightColor();
+            }
+            todoCategory.style.backgroundColor = categoryColors[categoryName];
+        }
+    };
+
+    setCategoryColors(); // 초기 설정
+
+    // MutationObserver를 사용하여 DOM 변경을 감지
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                setCategoryColors(); // 카테고리가 추가되거나 삭제될 때 색상 재설정
+            }
+        }
+    });
+
+    // 감시할 DOM 노드를 지정
+    const config = { childList: true, subtree: true };
+    observer.observe(document.querySelector('.main-content ul'), config);
+</script>
+
+
 </body>
 </html>

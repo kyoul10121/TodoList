@@ -70,6 +70,7 @@ public class TodoController {
     //사이드바 수정 삭제
     @DeleteMapping("/sidebar/{id}")
     public String deleteSidebar(@PathVariable Long id) {
+
         categoryRepository.deleteById(id);
         return "redirect:/";
     }

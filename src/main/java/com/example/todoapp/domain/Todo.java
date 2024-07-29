@@ -15,6 +15,7 @@ public class Todo { // todo table과 관련이 있고 '@Id'
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;    //이 아이디는 자동 증가하는 값이다.(바로 위에 줄의 뜻 -> '@GeneratedValue')
 
+
     @NotNull
     private String todo;
 

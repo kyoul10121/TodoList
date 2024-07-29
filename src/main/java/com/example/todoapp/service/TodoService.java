@@ -29,7 +29,8 @@ public class TodoService {
     public Todo save(Todo todo) {
         return todoRepository.save(todo);
     }
-    public Category save(Category category){
+
+    public Category save(Category category) {
         return categoryRepository.save(category);
     }
 
@@ -40,4 +41,5 @@ public class TodoService {
     public Optional<Category> findByIdCategory(Long id) {
         return categoryRepository.findById(id);
     }
+
 }
